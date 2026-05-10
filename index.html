@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanctuary | Virtual Study Room</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div id="custom-cursor"></div>
+    <div id="cursor-glow"></div>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-content">
+            <h1 class="loader-title">SANCTUARY</h1>
+            <p class="loader-subtitle">Loading your digital space...</p>
+            <div class="loader-bar"><div class="loader-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- Background and Ambience -->
+    <div class="background-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+        <div class="film-grain"></div>
+        <canvas id="rain-canvas"></canvas>
+    </div>
+
+    <!-- Main Layout -->
+    <main class="app-container">
+        
+        <!-- Header / Navigation -->
+        <header class="glass-panel main-header">
+            <div class="logo">
+                <span class="logo-text">SANCTUARY</span>
+                <span class="logo-kanji">聖域</span>
+            </div>
+            <div class="header-controls">
+                <button class="icon-btn" id="btn-fullscreen" title="Toggle Fullscreen"><i class="ri-fullscreen-line"></i></button>
+                <button class="icon-btn" id="btn-settings" title="Settings"><i class="ri-settings-3-line"></i></button>
+            </div>
+        </header>
+
+        <!-- Grid Layout -->
+        <div class="bento-grid">
+            
+            <!-- Left Column -->
+            <div class="col-left">
+                <!-- Clock & Weather Panel -->
+                <div class="glass-panel clock-panel hover-effect">
+                    <div class="clock-display" id="time">00:00</div>
+                    <div class="date-display" id="date">Loading...</div>
+                    <div class="greeting-display" id="greeting">Good evening.</div>
+                    <div class="weather-widget">
+                        <i class="ri-moon-cloudy-line" id="weather-icon"></i>
+                        <span id="weather-temp">18°C Tokyo</span>
+                    </div>
+                </div>
+
+                <!-- Motivation Panel -->
+                <div class="glass-panel quote-panel hover-effect">
+                    <i class="ri-double-quotes-l quote-icon"></i>
+                    <p id="quote-text">"The secret of your future is hidden in your daily routine."</p>
+                </div>
+                
+                <!-- Study Streak Panel -->
+                <div class="glass-panel streak-panel hover-effect">
+                    <div class="panel-header">
+                        <h3><i class="ri-fire-fill streak-icon"></i> Focus Streak</h3>
+                    </div>
+                    <div class="streak-content">
+                        <div class="streak-number" id="streak-count">0</div>
+                        <div class="streak-label">Days</div>
+                    </div>
+                    <div class="streak-stats">
+                        <div class="stat">
+                            <span class="stat-label">Sessions</span>
+                            <span class="stat-val" id="total-sessions">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Hours</span>
+                            <span class="stat-val" id="total-hours">0.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column: Timer -->
+            <div class="col-center">
+                <div class="glass-panel timer-panel hover-effect" id="timer-panel">
+                    <div class="timer-modes">
+                        <button class="mode-btn active" data-mode="focus">Focus</button>
+                        <button class="mode-btn" data-mode="shortBreak">Short Break</button>
+                        <button class="mode-btn" data-mode="longBreak">Long Break</button>
+                    </div>
+                    
+                    <div class="timer-display-container">
+                        <svg class="progress-ring" width="300" height="300">
+                            <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.03)" stroke-width="4" fill="transparent" r="140" cx="150" cy="150"/>
+                            <circle class="progress-ring__circle" stroke="#a78bfa" stroke-width="4" fill="transparent" r="140" cx="150" cy="150"/>
+                        </svg>
+                        <div class="timer-text-container">
+                            <div class="timer-text" id="timer">25:00</div>
+                            <div class="timer-status" id="timer-status">Ready to focus</div>
+                        </div>
+                    </div>
+
+                    <div class="timer-controls">
+                        <button class="primary-btn" id="start-btn"><i class="ri-play-fill"></i> Start</button>
+                        <button class="icon-btn" id="reset-btn" title="Reset Timer"><i class="ri-refresh-line"></i></button>
+                    </div>
+                </div>
+                
+                <div class="deep-focus-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="deep-focus-cb">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="df-label">Deep Focus Mode</span>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-right">
+                <!-- Task Manager -->
+                <div class="glass-panel tasks-panel hover-effect">
+                    <div class="panel-header">
+                        <h3><i class="ri-list-check"></i> Tasks</h3>
+                        <span id="task-progress" class="task-progress-text">0/0</span>
+                    </div>
+                    <div class="task-input-wrapper">
+                        <input type="text" id="task-input" placeholder="Add a new task..." autocomplete="off">
+                        <button id="add-task-btn"><i class="ri-add-line"></i></button>
+                    </div>
+                    <ul class="task-list" id="task-list">
+                        <!-- Tasks dynamically populated -->
+                    </ul>
+                </div>
+
+                <!-- Ambient Sounds -->
+                <div class="glass-panel sounds-panel hover-effect">
+                    <div class="panel-header">
+                        <h3><i class="ri-headphone-line"></i> Ambience</h3>
+                        <button class="icon-btn small" id="mute-all" title="Mute All"><i class="ri-volume-mute-line"></i></button>
+                    </div>
+                    <div class="sound-sliders">
+                        <div class="sound-item">
+                            <i class="ri-rainy-line"></i>
+                            <input type="range" class="volume-slider" min="0" max="100" value="0" data-sound="rain">
+                        </div>
+                        <div class="sound-item">
+                            <i class="ri-disc-line"></i>
+                            <input type="range" class="volume-slider" min="0" max="100" value="0" data-sound="lofi">
+                        </div>
+                        <div class="sound-item">
+                            <i class="ri-cup-line"></i>
+                            <input type="range" class="volume-slider" min="0" max="100" value="0" data-sound="cafe">
+                        </div>
+                        <div class="sound-item">
+                            <i class="ri-keyboard-line"></i>
+                            <input type="range" class="volume-slider" min="0" max="100" value="0" data-sound="keyboard">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Environment Controls -->
+                <div class="glass-panel env-panel hover-effect">
+                    <div class="panel-header">
+                        <h3><i class="ri-lightbulb-line"></i> Environment</h3>
+                    </div>
+                    <div class="env-controls">
+                        <button class="env-btn active" id="btn-rain-toggle"><i class="ri-drop-line"></i> Rain Visuals</button>
+                        <button class="env-btn active" id="btn-blur-toggle"><i class="ri-blaze-line"></i> Window Fog</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Audio Elements -->
+    <audio id="audio-rain" loop preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/1244/1244-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audio-lofi" loop preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/135/135-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audio-cafe" loop preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2048/2048-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audio-keyboard" loop preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2405/2405-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
